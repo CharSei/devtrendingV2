@@ -31,15 +31,21 @@ st.caption("Live-Demo mit Review, Audit Trail und Trend Memory.")
 st.markdown(
     """
 <style>
-section[data-testid="stSidebar"] { width: 360px !important; }
+section[data-testid="stSidebar"] { min-width: 320px !important; max-width: 420px !important; }
+.block-container { padding-top: 1rem; padding-bottom: 1rem; max-width: 96rem; }
 div[data-testid="stMarkdownContainer"] { overflow-wrap: anywhere; }
-div[data-testid="stMarkdownContainer"] p { white-space: normal !important; }
-code { white-space: pre-wrap !important; }
-.block-container { padding-top: 1.1rem; padding-bottom: 1.1rem; }
+div[data-testid="stMarkdownContainer"] p { white-space: normal !important; overflow-wrap: anywhere !important; }
+div[data-baseweb="select"] * { white-space: normal !important; overflow-wrap: anywhere !important; }
+[data-testid="stMetricLabel"] { white-space: normal !important; }
+code { white-space: pre-wrap !important; overflow-wrap: anywhere !important; }
 </style>
     """,
     unsafe_allow_html=True,
 )
+
+def _shorten(text: str, max_len: int = 88) -> str:
+    text = str(text or "").strip()
+    return text if len(text) <= max_len else text[: max_len - 1] + "…"
 
 mode = st.radio("Modus", ["Live-Analyse (Excel Upload)", "Repository-Modus (trends.json)"], horizontal=True)
 
@@ -171,28 +177,24 @@ st.dataframe(
     use_container_width=True,
     hide_index=True,
     column_config={
-        "rank": st.column_config.NumberColumn("#", format="%d"),
-        "subcategory": st.column_config.TextColumn("Subcategory"),
-        "defect_code": st.column_config.TextColumn("Defect Code"),
-        "n_events": st.column_config.NumberColumn("Events", format="%d"),
-        "similarity": st.column_config.NumberColumn("Similarity", format="%.3f"),
-        "review_status": st.column_config.TextColumn("Review"),
-        "suggested_from_memory": st.column_config.CheckboxColumn("Aus Memory"),
-        "memory_match_score": st.column_config.NumberColumn("Memory Score", format="%.3f"),
-        "trend_title": st.column_config.TextColumn("Trend"),
-        "trend_summary": st.column_config.TextColumn("Beschreibung"),
+        "rank": st.column_config.NumberColumn("#", format="%d", width="small"),
+        "subcategory": st.column_config.TextColumn("Subcategory", width="medium"),
+        "defect_code": st.column_config.TextColumn("Defect Code", width="medium"),
+        "n_events": st.column_config.NumberColumn("Events", format="%d", width="small"),
+        "similarity": st.column_config.NumberColumn("Similarity", format="%.3f", width="small"),
+        "review_status": st.column_config.TextColumn("Review", width="small"),
+        "suggested_from_memory": st.column_config.CheckboxColumn("Aus Memory", width="small"),
+        "memory_match_score": st.column_config.NumberColumn("Memory Score", format="%.3f", width="small"),
+        "trend_title": st.column_config.TextColumn("Trend", width="large"),
+        "trend_summary": st.column_config.TextColumn("Beschreibung", width="large"),
     },
-    height=min(720, 44 + 28 * min(len(tbl), 18)),
+    height=min(760, 44 + 32 * min(len(tbl), 18)),
 )
 
 st.subheader("🔎 Trend-Details")
 
-def _shorten(s, n=80):
-    s = str(s)
-    return s if len(s) <= n else s[:n-1] + "…"
-
 options = ["(wähle Trend)"] + [
-    f"[{int(r.rank)}] {_shorten(r.trend_title, 70)} (n={int(r.n_events)})"
+    f"[{int(r.rank)}] {_shorten(r.trend_title, 72)} | {_shorten(r.subcategory, 20)} → {_shorten(r.defect_code, 20)} | n={int(r.n_events)} | sim={float(r.similarity):.3f}"
     for r in tbl.itertuples(index=False)
 ]
 choice = st.selectbox("Trend auswählen", options, index=1 if len(options) > 1 else 0)
