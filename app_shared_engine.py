@@ -25,19 +25,41 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-st.title("📊 Deviations Trending MVP")
-st.caption("Live-Demo mit Review, Audit Trail und Trend Memory.")
+st.markdown(
+    """
+    <div class="app-title-wrap">
+        <div class="app-title">📊 Deviations Trending MVP</div>
+        <div class="app-subtitle">Live-Demo mit Review, Audit Trail und Trend Memory.</div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.markdown(
     """
 <style>
 section[data-testid="stSidebar"] { min-width: 320px !important; max-width: 420px !important; }
-.block-container { padding-top: 1rem; padding-bottom: 1rem; max-width: 96rem; }
+.block-container { padding-top: 3.5rem; padding-bottom: 1rem; max-width: 96rem; }
 div[data-testid="stMarkdownContainer"] { overflow-wrap: anywhere; }
 div[data-testid="stMarkdownContainer"] p { white-space: normal !important; overflow-wrap: anywhere !important; }
 div[data-baseweb="select"] * { white-space: normal !important; overflow-wrap: anywhere !important; }
 [data-testid="stMetricLabel"] { white-space: normal !important; }
 code { white-space: pre-wrap !important; overflow-wrap: anywhere !important; }
+.app-title-wrap { padding-top: 0.25rem; padding-bottom: 0.5rem; }
+.app-title {
+    font-size: clamp(2rem, 3vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0;
+    padding: 0.25rem 0 0.1rem 0;
+}
+.app-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-top: 0.25rem;
+    margin-bottom: 1.25rem;
+}
+
 </style>
     """,
     unsafe_allow_html=True,
