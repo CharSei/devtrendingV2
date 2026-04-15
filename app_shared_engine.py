@@ -21,7 +21,7 @@ from trend_engine import (
 st.set_page_config(
     page_title="Deviations Trending MVP",
     page_icon="📊",
-    layout="centered",
+    layout="wide",
     initial_sidebar_state="expanded",
 )
 
@@ -187,8 +187,12 @@ st.dataframe(
 
 st.subheader("🔎 Trend-Details")
 
+def _shorten(s, n=80):
+    s = str(s)
+    return s if len(s) <= n else s[:n-1] + "…"
+
 options = ["(wähle Trend)"] + [
-    f"[{int(r.rank)}] {r.trend_title}  —  {r.subcategory} → {r.defect_code}  (n={int(r.n_events)}, sim={float(r.similarity):.3f})"
+    f"[{int(r.rank)}] {_shorten(r.trend_title, 70)} (n={int(r.n_events)})"
     for r in tbl.itertuples(index=False)
 ]
 choice = st.selectbox("Trend auswählen", options, index=1 if len(options) > 1 else 0)
